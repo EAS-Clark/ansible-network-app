@@ -1,3 +1,71 @@
 ---
 # tasks file for app
- 
+        
+  - name: Install nodejs version 18
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+     packages:
+      - "*"
+      - nodejs
+
+  - name: Create a directory if it does not exist
+    ansible.builtin.file:
+      path: "{{ node_apps_location }}"
+      state: directory
+      mode: '0755'
+
+  - name: Git checkout
+    ansible.builtin.git:
+      repo: "{{ git_repo }}"
+      dest: "{{ node_apps_location }}"
+      clone: yes
+
+  # - name: Install packages based on package.json.
+  #   become: true
+  #   npm:
+  #     path: "{{ node_apps_location }}"
+
+  # - name: setting app as executable
+  #   file: dest={{ node_apps_location }}/src/app.js mode=a+x
+
+
+  # - name: make myapp.service
+  #   blockinfile:
+
+  #     dest: /lib/systemd/system/myapp.service
+  #     block: |
+  #       [Unit]
+  #       Description=My app
+  #       [Service]
+  #       Restart=on-failure
+  #       ExecStart=/usr/bin/node {{ node_apps_location }}/src/app.js
+  #       User=nobody
+  #       Group=nogroup
+  #       Environment=TARGET_URL={{ target_url}}
+  #       Environment=PORT={{ port_number }}
+  #       WorkingDirectory={{ node_apps_location }}
+  #       [Install]
+  #       WantedBy=multi-user.target
+  #     insertafter: EOF
+  #     create: yes
+
+  # - name: do permit traffic in default zone on port 80/http
+  #   ansible.posix.firewalld:
+  #     port: 80/http
+  #     permanent: yes
+  #     state: enabled
+
+
+  # - name: daemon-reload 
+  #   command: systemctl daemon-reload
+
+  # - name: enable myapp on start up
+  #   command: systemctl enable myapp
+
+  # - name: reloading myapp.service
+  #   service:
+  #     name: myapp
+  #     state: restarted

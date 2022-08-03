@@ -1,2 +1,8 @@
 ---
 # vars file for app
+
+
+target_url: gateway
+node_apps_location: "/opt/trainee-challenge-node-app"
+git_repo: https://github.com/Enterprise-Automation/trainee-challenge-node-app.git
+port_number: 80
