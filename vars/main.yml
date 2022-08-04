@@ -1,8 +1,10 @@
 ---
 # vars file for app
 
-
+domainName: "clark"
+port_number: 90
 target_url: gateway
 node_apps_location: "/opt/trainee-challenge-node-app"
-git_repo: https://github.com/Enterprise-Automation/trainee-challenge-node-app.git
-port_number: 80
+file_name_unarchive: trainee-challenge-node-app-main
+file_name: trainee-challenge-node-app-main.tar.gz
+nexusrm_location: "https://nexusrm.easlab.co.uk/repository/eas-hosted-bin/{{ file_name }}"
