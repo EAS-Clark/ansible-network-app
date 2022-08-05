@@ -2,7 +2,7 @@
 # vars file for app
 
 domainName: "clark"
-port_number: 90
+port_number: 80
 target_url: gateway
 node_apps_location: "/opt/trainee-challenge-node-app"
 file_name_unarchive: trainee-challenge-node-app-main

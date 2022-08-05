@@ -12,7 +12,7 @@
   - name: download node
     shell: curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
 
-  - name: Install nodejs version 18
+  - name: Install nodejs
     yum:
       name: nodejs
       update_cache: yes
@@ -33,12 +33,8 @@
     npm:
       path: "{{ node_apps_location }}/{{ file_name_unarchive }}"
 
-  # - name: setting app as executable
-  #   file: dest={{ node_apps_location }}/{{ file_name_unarchive }}/index.js mode=a+x
-
-
-# export TARGET_URL=HTTP://gateway.clark.local
-# export PORT=80
+  - name: setting app as executable
+    file: dest={{ node_apps_location }}/{{ file_name_unarchive }}/index.js mode=a+x
 
   - name: make myapp.service
     blockinfile:
@@ -47,10 +43,10 @@
         [Unit]
         Description=My app
         [Service]
-        Restart=on-failure
+        Restart=always
+        RestartSec=5
         ExecStart=/usr/bin/node {{ node_apps_location }}/{{ file_name_unarchive }}
-        User=nobody
-        Group=nogroup
+        User=root
         Environment=TARGET_URL=HTTP://{{ target_url }}.{{ domainName }}.local
         Environment=PORT={{ port_number }}
         WorkingDirectory={{ node_apps_location }}/{{ file_name_unarchive }}
@@ -59,22 +55,28 @@
       insertafter: EOF
       create: yes
 
-  - name: permit traffic in default zone for https service
+  - name: permit open traffic on port 80/tcp
     ansible.posix.firewalld:
-      service: https
+      port: 80/tcp
       permanent: yes
       state: enabled
 
-  - name: daemon-reload 
-    command: systemctl daemon-reload
+  - name: reload service firewalld
+    systemd:
+      name: firewalld
+      state: reloaded
 
-  - name: enable myapp on start up
-    command: systemctl enable myapp
+  - name: daemon-reload
+    ansible.builtin.systemd:
+      daemon_reload: yes
+
+  - name: enable reloading myapp.service
+    service:
+      name: myapp
+      enabled: yes
 
   - name: reloading myapp.service
     service:
       name: myapp
       state: restarted
 
-
-# /opt/trainee-challenge-node-app/trainee-challenge-node-app-main
