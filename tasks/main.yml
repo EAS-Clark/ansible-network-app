@@ -47,7 +47,7 @@
         RestartSec=5
         ExecStart=/usr/bin/node {{ node_apps_location }}/{{ file_name_unarchive }}
         User=root
-        Environment=TARGET_URL=HTTP://{{ target_url }}.{{ domainName }}.local
+        Environment=TARGET_URL=HTTP://{{ target_url }}.{{ domain_name }}.{{ domain_name_extension }}
         Environment=PORT={{ port_number }}
         WorkingDirectory={{ node_apps_location }}/{{ file_name_unarchive }}
         [Install]
