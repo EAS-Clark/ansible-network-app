@@ -23,11 +23,23 @@
       state: directory
       mode: '0755'
 
+  - name: "copy file into "
+    copy:
+      src: trainee-challenge-node-app-main.tar.gz
+      dest: "{{ node_apps_location }}"
+
   - name: "{{ nexusrm_location }} into {{ node_apps_location }}"
     ansible.builtin.unarchive:
-      src: "{{ nexusrm_location }}"
+      src: "{{ node_apps_location }}/trainee-challenge-node-app-main.tar.gz"
       dest: "{{ node_apps_location }}"
       remote_src: yes
+
+
+  # - name: "{{ nexusrm_location }} into {{ node_apps_location }}"
+  #   ansible.builtin.unarchive:
+  #     src: "{{ nexusrm_location }}"
+  #     dest: "{{ node_apps_location }}"
+  #     remote_src: yes
       
   - name: Install packages based on package.json.
     npm:

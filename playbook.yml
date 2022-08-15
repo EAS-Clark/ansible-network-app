@@ -44,28 +44,22 @@
   roles:
     -  {role: ansible-network-gateway,  when: '"clark-gateway" in inventory_hostname'}
     -  {role: ansible-network-dhcp,  when: '"clark-dhcp" in inventory_hostname'}
-    -  {role: ansible-network-gateway,  when: '"clark-gateway" in inventory_hostname'}
+    -  {role: ansible-network-dns,  when: '"clark-dns" in inventory_hostname'}
 
 
   tasks:
 
-  - name: start app on dhcp 
+  - name: "setting target_url"
     when: "{{ item in inventory_hostname }}"
-    set_fact: 
-      target_url: "{{ hostvars['clark-gateway']['data']['interface_in_name'] }}"
-    loop: "{{ groups['all'] }}"
+    set_fact:
+      target_url: "{{ data[ my_idx].name}}"
+    loop:
+     "{{ groups['all'] }}"
+    loop_control:
+      index_var: my_idx
 
-  
-
-  - name: start app on dns 
-    set_fact: 
-      target_url: dhcp
+  - name: start app up
     include_tasks: tasks/main.yml
-    when: "{{ 'clark-dns' in inventory_hostname }}"
-
-
-
-# target_url
 
   - name: reloading network for gateway
     when: "{{ 'clark-gateway' in inventory_hostname }}"
@@ -85,9 +79,9 @@
       name: network
       state: restarted
 
-  - name: Removing ens192
-    when: "{{ 'clark-dhcp' in inventory_hostname }}"
-    community.general.nmcli:
-      conn_name: ens192
-      state: absent
+  # - name: Removing ens192
+  #   when: "{{ 'clark-dhcp' in inventory_hostname }}"
+  #   community.general.nmcli:
+  #     conn_name: ens192
+  #     state: absent
 
